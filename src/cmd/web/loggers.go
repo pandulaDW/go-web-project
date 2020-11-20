@@ -1,14 +1,19 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"log"
 	"os"
+	"time"
 )
 
 // create a logger to log info to stdout and to a file
 func (app *application) createInfoLogger() {
-	file, err := os.OpenFile("logs/info.log", os.O_CREATE|os.O_APPEND, 0666)
+	now := time.Now()
+	today := fmt.Sprintf("%d_%d_%d", now.Year(), now.Month(), now.Day())
+	filePath := fmt.Sprintf("logs/info_%s.txt", today)
+	file, err := os.OpenFile(filePath, os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
 		log.Println(err)
 	}
@@ -21,12 +26,15 @@ func (app *application) createInfoLogger() {
 
 // create a logger to log error to stdout and to a file
 func (app *application) createErrorLogger() {
-	file, err := os.OpenFile("logs/error.log", os.O_CREATE|os.O_APPEND, 0666)
+	now := time.Now()
+	today := fmt.Sprintf("%d_%d_%d", now.Year(), now.Month(), now.Day())
+	filePath := fmt.Sprintf("logs/error_%s.txt", today)
+	file, err := os.OpenFile(filePath, os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
 		log.Println(err)
 	}
 
-	multiWriter := io.MultiWriter(file, os.Stdout)
+	multiWriter := io.MultiWriter(file, os.Stderr)
 
 	errorLogger := log.New(multiWriter, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 	app.errorLogger = errorLogger

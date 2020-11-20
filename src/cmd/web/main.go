@@ -9,6 +9,10 @@ func main() {
 	// create a new app instance
 	app := application{}
 
+	// create the loggers
+	app.createInfoLogger()
+	app.createErrorLogger()
+
 	// reading configuration info from command line
 	addr := flag.String("addr", ":4000", "HTTP network address")
 	flag.Parse()
