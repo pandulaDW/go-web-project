@@ -5,10 +5,15 @@ import (
 	"net/http"
 )
 
-func main() {
-	// create a new app instance
-	app := application{}
+// define global app variable
+var app application
 
+func init() {
+	// create a new app instance
+	app = application{}
+}
+
+func main() {
 	// create the loggers
 	app.createInfoLogger()
 	app.createErrorLogger()
@@ -29,11 +34,11 @@ func main() {
 	// create a new http server struct
 	srv := &http.Server{
 		Addr:     *addr,
-		ErrorLog: app.errorLogger,
+		ErrorLog: app.errorLogger.logger,
 		Handler:  mux,
 	}
 
-	app.infoLogger.Printf("Starting server on %s", *addr)
+	app.infoLogger.PrintLog("Starting server on " + *addr)
 	err := srv.ListenAndServe()
-	app.errorLogger.Fatal(err)
+	app.errorLogger.logger.Fatal(err)
 }
