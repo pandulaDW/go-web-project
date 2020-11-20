@@ -21,13 +21,13 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 
 	ts, err := template.ParseFiles(files...)
 	if err != nil {
-		app.errorLogger.PrintLog(err.Error())
+		app.errorLogger.Println(err.Error())
 		http.Error(w, "Internal Server Error", 500)
 		return
 	}
 	err = ts.Execute(w, nil)
 	if err != nil {
-		app.errorLogger.PrintLog(err.Error())
+		app.errorLogger.Println(err.Error())
 		http.Error(w, "Internal Server Error", 500)
 	}
 }
