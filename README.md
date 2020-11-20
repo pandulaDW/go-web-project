@@ -10,3 +10,7 @@ This repo contains code that's given in the book Let's Go
  - User authentication and authorization is included.
  - Supports HTTPS.
  - Uses a express like middleware based approach
+
+### Usage
+ - Use go build -o ./tmp/main.exe ./src/cmd/web/* && ./tmp/main.exe for development
+ - Use go build -o ./tmp/main.exe ./src/cmd/web/* && ./tmp/main.exe --addr=":5000" to change address
