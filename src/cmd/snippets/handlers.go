@@ -7,13 +7,14 @@ import (
 	"strconv"
 
 	"github.com/pandulaDW/go-web-project/src/cmd/config"
+	"github.com/pandulaDW/go-web-project/src/cmd/helpers"
 )
 
 // Home returns the handler function for Home route
 func Home(app *config.Application) http.HandlerFunc {
 	handler := func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/" {
-			http.NotFound(w, r)
+			helpers.NotFound(w)
 			return
 		}
 
@@ -25,14 +26,12 @@ func Home(app *config.Application) http.HandlerFunc {
 
 		ts, err := template.ParseFiles(files...)
 		if err != nil {
-			app.ErrorLogger.Println(err.Error())
-			http.Error(w, "Internal Server Error", 500)
+			helpers.ServeError(w, err, app)
 			return
 		}
 		err = ts.Execute(w, nil)
 		if err != nil {
-			app.ErrorLogger.Println(err.Error())
-			http.Error(w, "Internal Server Error", 500)
+			helpers.ServeError(w, err, app)
 		}
 	}
 
@@ -44,7 +43,7 @@ func ShowSnippet(app *config.Application) http.HandlerFunc {
 	handler := func(w http.ResponseWriter, r *http.Request) {
 		id, err := strconv.Atoi(r.URL.Query().Get("id"))
 		if err != nil {
-			http.NotFound(w, r)
+			helpers.NotFound(w)
 			return
 		}
 
@@ -60,7 +59,7 @@ func CreateSnippet(app *config.Application) http.HandlerFunc {
 	handler := func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "POST" {
 			w.Header().Set("Allow", "POST")
-			http.Error(w, "Method not allowed", 405)
+			helpers.ClientError(w, http.StatusMethodNotAllowed)
 			return
 		}
 		w.Write([]byte("Create a new snippet..."))

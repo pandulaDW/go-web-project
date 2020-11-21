@@ -39,6 +39,7 @@ func main() {
 		Handler:  mux,
 	}
 
+	// starting the server
 	app.InfoLogger.Printf("Starting server on %s", *addr)
 	err := srv.ListenAndServe()
 	app.ErrorLogger.Fatal(err)
