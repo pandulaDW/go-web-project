@@ -2,32 +2,31 @@ package main
 
 import (
 	"flag"
-	"log"
 	"net/http"
-)
 
-// using this struct for dependency injection
-type application struct {
-	errorLogger *log.Logger
-	infoLogger  *log.Logger
-}
+	"github.com/pandulaDW/go-web-project/src/cmd/config"
+	"github.com/pandulaDW/go-web-project/src/cmd/snippets"
+)
 
 func main() {
 	// define initial app
-	app := application{}
+	app := config.Application{}
 
 	// create the loggers
-	app.createInfoLogger()
-	app.createErrorLogger()
+	app.CreateInfoLogger()
+	app.CreateErrorLogger()
 
 	// reading configuration info from command line
 	addr := flag.String("addr", ":4000", "HTTP network address")
 	flag.Parse()
 
+	// create the serve mux router
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", app.home)
-	mux.HandleFunc("/snippet", app.showSnippet)
-	mux.HandleFunc("/snippet/create", app.createSnippet)
+
+	// register handlers
+	mux.HandleFunc("/", snippets.Home(&app))
+	mux.HandleFunc("/snippet", snippets.ShowSnippet(&app))
+	mux.HandleFunc("/snippet/create", snippets.CreateSnippet(&app))
 
 	// static file handling
 	fileServer := http.FileServer(http.Dir("./src/ui/static/"))
@@ -36,11 +35,11 @@ func main() {
 	// create a new http server struct
 	srv := &http.Server{
 		Addr:     *addr,
-		ErrorLog: app.errorLogger,
+		ErrorLog: app.ErrorLogger,
 		Handler:  mux,
 	}
 
-	app.infoLogger.Printf("Starting server on %s", *addr)
+	app.InfoLogger.Printf("Starting server on %s", *addr)
 	err := srv.ListenAndServe()
-	app.errorLogger.Fatal(err)
+	app.ErrorLogger.Fatal(err)
 }
