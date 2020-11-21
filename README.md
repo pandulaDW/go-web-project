@@ -12,5 +12,6 @@ This repo contains code that's given in the book Let's Go
  - Uses a express like middleware based approach
 
 ### Usage
+ - Use air -c .air.toml for live reloading
  - Use go build -o ./tmp/main.exe ./src/cmd/web/* && ./tmp/main.exe for development
  - Use go build -o ./tmp/main.exe ./src/cmd/web/* && ./tmp/main.exe --addr=":5000" to change address
