@@ -3,12 +3,15 @@ package config
 import (
 	"log"
 	"os"
+
+	"github.com/pandulaDW/go-web-project/src/pkg/models/mysql"
 )
 
 // Application struct defines the main config for the application
 type Application struct {
 	ErrorLogger *log.Logger
 	InfoLogger  *log.Logger
+	Snippets    *mysql.SnippetModel
 }
 
 // CreateInfoLogger creates a logger to log info type logs
