@@ -60,7 +60,7 @@ func ShowSnippet(app *config.Application) http.HandlerFunc {
 
 		w.Header().Set("Content-Type", "application/json")
 		response := showSnippetResponse(s)
-		fmt.Fprintf(w, "%v", response)
+		w.Write(response)
 	}
 
 	return handler
