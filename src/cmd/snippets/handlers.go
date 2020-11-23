@@ -48,7 +48,7 @@ func ShowSnippet(app *config.Application) http.HandlerFunc {
 		}
 
 		w.Header().Set("Content-Type", "application/json")
-		fmt.Fprintf(w, `{"name": "Alex", "id": %d}`, id)
+		fmt.Fprintf(w, `{"name": "New Snippet", "id": %d}`, id)
 	}
 
 	return handler
@@ -62,7 +62,19 @@ func CreateSnippet(app *config.Application) http.HandlerFunc {
 			helpers.ClientError(w, http.StatusMethodNotAllowed)
 			return
 		}
-		w.Write([]byte("Create a new snippet..."))
+
+		// dummy data
+		title := "O snail"
+		content := "O snail\nClimb Mount Fuji,\nBut slowly, slowly!\n\n– Kobayashi"
+		expires := "7"
+
+		id, err := app.Snippets.Insert(title, content, expires)
+		if err != nil {
+			helpers.ServeError(w, err, app)
+			return
+		}
+
+		http.Redirect(w, r, fmt.Sprintf("/snippet?id=%d", id), http.StatusSeeOther)
 	}
 
 	return handler
