@@ -8,6 +8,7 @@ import (
 
 	"github.com/pandulaDW/go-web-project/src/cmd/config"
 	"github.com/pandulaDW/go-web-project/src/cmd/helpers"
+	"github.com/pandulaDW/go-web-project/src/pkg/models"
 )
 
 // Home returns the handler function for Home route
@@ -41,14 +42,25 @@ func Home(app *config.Application) http.HandlerFunc {
 // ShowSnippet returns the handler function for ShowSnippet route
 func ShowSnippet(app *config.Application) http.HandlerFunc {
 	handler := func(w http.ResponseWriter, r *http.Request) {
+		// validate id is a positive integer
 		id, err := strconv.Atoi(r.URL.Query().Get("id"))
-		if err != nil {
+		if err != nil || id < 1 {
 			helpers.NotFound(w)
 			return
 		}
 
+		s, err := app.Snippets.Get(id)
+		if err == models.ErrNoRecord {
+			helpers.NotFound(w)
+			return
+		} else if err != nil {
+			helpers.ServeError(w, err, app)
+			return
+		}
+
 		w.Header().Set("Content-Type", "application/json")
-		fmt.Fprintf(w, `{"name": "New Snippet", "id": %d}`, id)
+		response := showSnippetResponse(s)
+		fmt.Fprintf(w, "%v", response)
 	}
 
 	return handler
