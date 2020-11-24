@@ -10,3 +10,8 @@ func showSnippetResponse(s *models.Snippet) []byte {
 	response, _ := json.Marshal(s)
 	return response
 }
+
+func latestSnippetResponse(s []*models.Snippet) []byte {
+	response, _ := json.Marshal(s)
+	return response
+}

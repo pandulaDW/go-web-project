@@ -91,3 +91,19 @@ func CreateSnippet(app *config.Application) http.HandlerFunc {
 
 	return handler
 }
+
+// LatestSnippets returns the handler function for LatestSnippets route
+func LatestSnippets(app *config.Application) http.HandlerFunc {
+	handler := func(w http.ResponseWriter, r *http.Request) {
+		results, err := app.Snippets.Latest()
+		if err != nil {
+			helpers.ServeError(w, err, app)
+		}
+
+		formattedResult := latestSnippetResponse(results)
+		w.Header().Set("content-type", "application/json")
+		w.Write(formattedResult)
+	}
+
+	return handler
+}
