@@ -14,7 +14,6 @@ func routes(app *config.Application) *http.ServeMux {
 	// register handlers
 	mux.HandleFunc("/", snippets.Home(app))
 	mux.HandleFunc("/snippet", snippets.ShowSnippet(app))
-	mux.HandleFunc("/snippets", snippets.LatestSnippets(app))
 	mux.HandleFunc("/snippet/create", snippets.CreateSnippet(app))
 
 	// static file handling

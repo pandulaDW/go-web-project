@@ -30,7 +30,14 @@ func Home(app *config.Application) http.HandlerFunc {
 			helpers.ServeError(w, err, app)
 			return
 		}
-		err = ts.Execute(w, nil)
+
+		results, err := app.Snippets.Latest()
+		if err != nil {
+			helpers.ServeError(w, err, app)
+		}
+
+		dataModel := &templateData{nil, results}
+		err = ts.Execute(w, dataModel)
 		if err != nil {
 			helpers.ServeError(w, err, app)
 		}
@@ -58,7 +65,7 @@ func ShowSnippet(app *config.Application) http.HandlerFunc {
 			return
 		}
 
-		dataModel := &templateData{s}
+		dataModel := &templateData{s, nil}
 
 		files := []string{
 			"./src/ui/html/show.page.htm",
@@ -102,22 +109,6 @@ func CreateSnippet(app *config.Application) http.HandlerFunc {
 		}
 
 		http.Redirect(w, r, fmt.Sprintf("/snippet?id=%d", id), http.StatusSeeOther)
-	}
-
-	return handler
-}
-
-// LatestSnippets returns the handler function for LatestSnippets route
-func LatestSnippets(app *config.Application) http.HandlerFunc {
-	handler := func(w http.ResponseWriter, r *http.Request) {
-		results, err := app.Snippets.Latest()
-		if err != nil {
-			helpers.ServeError(w, err, app)
-		}
-
-		formattedResult := latestSnippetResponse(results)
-		w.Header().Set("content-type", "application/json")
-		w.Write(formattedResult)
 	}
 
 	return handler
