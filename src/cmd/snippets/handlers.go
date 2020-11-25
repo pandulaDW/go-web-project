@@ -58,9 +58,24 @@ func ShowSnippet(app *config.Application) http.HandlerFunc {
 			return
 		}
 
-		w.Header().Set("Content-Type", "application/json")
-		response := showSnippetResponse(s)
-		w.Write(response)
+		dataModel := &templateData{s}
+
+		files := []string{
+			"./src/ui/html/show.page.htm",
+			"./src/ui/html/footer.layout.htm",
+			"./src/ui/html/base.layout.htm",
+		}
+
+		ts, err := template.ParseFiles(files...)
+		if err != nil {
+			helpers.ServeError(w, err, app)
+			return
+		}
+
+		err = ts.Execute(w, dataModel)
+		if err != nil {
+			helpers.ServeError(w, err, app)
+		}
 	}
 
 	return handler
