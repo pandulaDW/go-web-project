@@ -3,13 +3,21 @@ package snippets
 import (
 	"html/template"
 	"path/filepath"
+	"time"
 
 	"github.com/pandulaDW/go-web-project/src/pkg/models"
 )
 
 type templateData struct {
-	Snippet  *models.Snippet
-	Snippets []*models.Snippet
+	CurrentYear int
+	Snippet     *models.Snippet
+	Snippets    []*models.Snippet
+}
+
+func createTemplateWithDefaults() *templateData {
+	td := &templateData{}
+	td.CurrentYear = time.Now().Year()
+	return td
 }
 
 // NewTemplateCache creates a cache for templates

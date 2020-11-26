@@ -23,7 +23,8 @@ func Home(app *config.Application) http.HandlerFunc {
 			helpers.ServeError(w, err, app)
 		}
 
-		dataModel := &templateData{nil, results}
+		dataModel := createTemplateWithDefaults()
+		dataModel.Snippets = results
 		helpers.Render(w, r, "home.page.htm", dataModel, app)
 	}
 
@@ -49,7 +50,8 @@ func ShowSnippet(app *config.Application) http.HandlerFunc {
 			return
 		}
 
-		dataModel := &templateData{s, nil}
+		dataModel := createTemplateWithDefaults()
+		dataModel.Snippet = s
 		helpers.Render(w, r, "show.page.htm", dataModel, app)
 	}
 
