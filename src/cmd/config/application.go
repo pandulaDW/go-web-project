@@ -1,6 +1,7 @@
 package config
 
 import (
+	"html/template"
 	"log"
 	"os"
 
@@ -9,9 +10,10 @@ import (
 
 // Application struct defines the main config for the application
 type Application struct {
-	ErrorLogger *log.Logger
-	InfoLogger  *log.Logger
-	Snippets    *mysql.SnippetModel
+	ErrorLogger   *log.Logger
+	InfoLogger    *log.Logger
+	Snippets      *mysql.SnippetModel
+	TemplateCache map[string]*template.Template
 }
 
 // CreateInfoLogger creates a logger to log info type logs

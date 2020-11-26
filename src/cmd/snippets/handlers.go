@@ -2,7 +2,6 @@ package snippets
 
 import (
 	"fmt"
-	"html/template"
 	"net/http"
 	"strconv"
 
@@ -19,28 +18,13 @@ func Home(app *config.Application) http.HandlerFunc {
 			return
 		}
 
-		files := []string{
-			"./src/ui/html/home.page.htm",
-			"./src/ui/html/footer.layout.htm",
-			"./src/ui/html/base.layout.htm",
-		}
-
-		ts, err := template.ParseFiles(files...)
-		if err != nil {
-			helpers.ServeError(w, err, app)
-			return
-		}
-
 		results, err := app.Snippets.Latest()
 		if err != nil {
 			helpers.ServeError(w, err, app)
 		}
 
 		dataModel := &templateData{nil, results}
-		err = ts.Execute(w, dataModel)
-		if err != nil {
-			helpers.ServeError(w, err, app)
-		}
+		helpers.Render(w, r, "home.page.htm", dataModel, app)
 	}
 
 	return handler
@@ -66,23 +50,7 @@ func ShowSnippet(app *config.Application) http.HandlerFunc {
 		}
 
 		dataModel := &templateData{s, nil}
-
-		files := []string{
-			"./src/ui/html/show.page.htm",
-			"./src/ui/html/footer.layout.htm",
-			"./src/ui/html/base.layout.htm",
-		}
-
-		ts, err := template.ParseFiles(files...)
-		if err != nil {
-			helpers.ServeError(w, err, app)
-			return
-		}
-
-		err = ts.Execute(w, dataModel)
-		if err != nil {
-			helpers.ServeError(w, err, app)
-		}
+		helpers.Render(w, r, "show.page.htm", dataModel, app)
 	}
 
 	return handler

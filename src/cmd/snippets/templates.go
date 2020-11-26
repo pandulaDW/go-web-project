@@ -12,7 +12,8 @@ type templateData struct {
 	Snippets []*models.Snippet
 }
 
-func newTemplateCache(dir string) (map[string]*template.Template, error) {
+// NewTemplateCache creates a cache for templates
+func NewTemplateCache(dir string) (map[string]*template.Template, error) {
 	cache := map[string]*template.Template{}
 
 	pages, err := filepath.Glob(filepath.Join(dir, "*.page.htm"))
@@ -20,7 +21,9 @@ func newTemplateCache(dir string) (map[string]*template.Template, error) {
 		return nil, err
 	}
 
+	// Loop through the pages one-by-one.
 	for _, page := range pages {
+
 		name := filepath.Base(page)
 
 		ts, err := template.ParseFiles(page)
@@ -28,10 +31,15 @@ func newTemplateCache(dir string) (map[string]*template.Template, error) {
 			return nil, err
 		}
 
-		ts, err = ts.ParseGlob(filepath.Join(dir, "*.partial.htm"))
+		ts, err = ts.ParseGlob(filepath.Join(dir, "*.layout.htm"))
 		if err != nil {
 			return nil, err
 		}
+
+		// ts, err = ts.ParseGlob(filepath.Join(dir, "*.partial.htm"))
+		// if err != nil {
+		// 	return nil, err
+		// }
 
 		cache[name] = ts
 	}

@@ -7,6 +7,7 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/pandulaDW/go-web-project/src/cmd/config"
+	"github.com/pandulaDW/go-web-project/src/cmd/snippets"
 	"github.com/pandulaDW/go-web-project/src/pkg/models/mysql"
 )
 
@@ -50,6 +51,13 @@ func main() {
 
 	// initialize snippet model
 	app.Snippets = &mysql.SnippetModel{DB: db}
+
+	// initialize template cache
+	templateCache, err := snippets.NewTemplateCache("./src/ui/html/")
+	if err != nil {
+		app.ErrorLogger.Fatal(err)
+	}
+	app.TemplateCache = templateCache
 
 	// starting the server
 	app.InfoLogger.Printf("Starting server on %s", *addr)
